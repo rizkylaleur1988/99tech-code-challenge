@@ -6,21 +6,37 @@ import { ValidationMessages } from "../utils/validation.util.js";
  * Copyright (c) 2026
  */
 
-export const validateGetProductById: ValidationChain[] = [
-  param("id").notEmpty().withMessage(ValidationMessages.REQUIRED).isNumeric().withMessage(ValidationMessages.MUST_BE_NUMBER),
-];
+const min: number = 1;
+const max: number = 2147483647;
 
-export const validateDeleteProductById: ValidationChain[] = [
-  param("id").notEmpty().withMessage(ValidationMessages.REQUIRED).isNumeric().withMessage(ValidationMessages.MUST_BE_NUMBER),
-];
+const id = param("id")
+  .notEmpty()
+  .withMessage(ValidationMessages.REQUIRED)
+  .isInt({ min })
+  .withMessage(ValidationMessages.MIN_VALUE(min))
+  .isInt({ max })
+  .withMessage(ValidationMessages.MAX_VALUE(max));
 
-export const validateCreateProduct: ValidationChain[] = [
-  body("name").notEmpty().withMessage(ValidationMessages.REQUIRED).isString().withMessage(ValidationMessages.MUST_BE_STRING),
-  body("price").notEmpty().withMessage(ValidationMessages.REQUIRED).isNumeric().withMessage(ValidationMessages.MUST_BE_NUMBER),
-];
+const name = body("name")
+  .notEmpty()
+  .withMessage(ValidationMessages.REQUIRED)
+  .isString()
+  .withMessage(ValidationMessages.MUST_BE_STRING)
+  .isLength({ max: 255 })
+  .withMessage(ValidationMessages.MAX_LENGTH(255));
 
-export const validateUpdateProduct: ValidationChain[] = [
-  param("id").notEmpty().withMessage(ValidationMessages.REQUIRED).isNumeric().withMessage(ValidationMessages.MUST_BE_NUMBER),
-  body("name").notEmpty().withMessage(ValidationMessages.REQUIRED).isString().withMessage(ValidationMessages.MUST_BE_STRING),
-  body("price").notEmpty().withMessage(ValidationMessages.REQUIRED).isNumeric().withMessage(ValidationMessages.MUST_BE_NUMBER),
-];
+const price = body("price")
+  .notEmpty()
+  .withMessage(ValidationMessages.REQUIRED)
+  .isInt({ min })
+  .withMessage(ValidationMessages.MIN_VALUE(min))
+  .isInt({ max })
+  .withMessage(ValidationMessages.MAX_VALUE(max));
+
+export const validateGetProductById: ValidationChain[] = [id];
+
+export const validateDeleteProductById: ValidationChain[] = [id];
+
+export const validateCreateProduct: ValidationChain[] = [name, price];
+
+export const validateUpdateProduct: ValidationChain[] = [id, name, price];
